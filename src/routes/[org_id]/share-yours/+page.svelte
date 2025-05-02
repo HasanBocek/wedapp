@@ -145,19 +145,9 @@
 		<button
 			class="mt-8 w-full cursor-pointer rounded-lg bg-pink-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-pink-700 focus:ring-4 focus:ring-pink-300 focus:outline-none disabled:opacity-50"
 			disabled={!canSend}
-			on:click={upload}
 		>
 			Gönder
 		</button>
 	</div>
 </div>
 <Footer {Actors} />
-
-<style>
-	.stacked img {
-		transition: transform 0.2s ease;
-	}
-	.stacked:hover img {
-		transform: translateY(-5px);
-	}
-</style>

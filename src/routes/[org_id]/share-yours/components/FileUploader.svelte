@@ -1,6 +1,6 @@
 <script>
 	import { flip } from 'svelte/animate';
-	
+
 	export let files = [];
 	export let previews = [];
 	export let expanded = false;
@@ -79,7 +79,7 @@
 		<!-- Collapsed dynamic view -->
 		<div
 			bind:this={containerRef}
-			class="stacked mt-8 relative h-32 cursor-pointer"
+			class="stacked relative mt-8 h-32 cursor-pointer"
 			on:click={onToggleExpanded}
 		>
 			{#each previews.slice(0, collapsedCount) as p, i (p.src)}
@@ -90,8 +90,7 @@
 					class="absolute h-36 w-36 rounded-lg object-cover shadow-lg"
 					style="left: {collapsedPositions[
 						i
-					]}; transform: translateX(-50%) rotate({collapsedRotations[i]}deg); z-index: {100 -
-						i};"
+					]}; transform: translateX(-50%) rotate({collapsedRotations[i]}deg); z-index: {100 - i};"
 				/>
 			{/each}
 			<div
@@ -130,11 +129,7 @@
 								/>
 							</svg>
 						</button>
-						<img
-							src={p.src}
-							alt={p.name}
-							class="h-32 w-full rounded-lg object-cover shadow-md"
-						/>
+						<img src={p.src} alt={p.name} class="h-32 w-full rounded-lg object-cover shadow-md" />
 					</div>
 				{/each}
 			</div>
@@ -142,4 +137,13 @@
 	{/if}
 {:else}
 	<p class="text-center text-gray-600">Henüz medya seçilmedi.</p>
-{/if} 
+{/if}
+
+<style>
+	.stacked img {
+		transition: transform 0.2s ease;
+	}
+	.stacked:hover img {
+		transform: translateY(-5px);
+	}
+</style>
