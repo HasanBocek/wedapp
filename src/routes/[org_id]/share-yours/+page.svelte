@@ -2,7 +2,9 @@
 	import { onMount } from 'svelte';
 	import FileUploader from './components/FileUploader.svelte';
 	import FormInputs from './components/FormInputs.svelte';
-	import Header from './components/Header.svelte';
+	import Title from './components/Title.svelte';
+	import Header from '../components/Header.svelte';
+	import Footer from '../components/Footer.svelte';
 
 	let files = [];
 	let previews = [];
@@ -10,6 +12,7 @@
 	let text = 'Çektiğiniz Kareleri Bizimle Paylaşın';
 	let authorName = '';
 	let messageText = '';
+	let Actors = 'John Doe & Maria';
 
 	let containerRef;
 	let collapsedCount = 1;
@@ -108,11 +111,12 @@
 	// }
 </script>
 
+<Header {Actors} />
 <div
 	class="relative flex min-h-screen items-center justify-center bg-white bg-[radial-gradient(70%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)] p-4"
 >
 	<div class="mb-8 w-full max-w-4xl space-y-6">
-		<Header {text} />
+		<Title {text} />
 
 		<FormInputs
 			bind:authorName
@@ -139,7 +143,7 @@
 		/>
 
 		<button
-			class="w-full mt-8 cursor-pointer rounded-lg bg-pink-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-300 disabled:opacity-50"
+			class="mt-8 w-full cursor-pointer rounded-lg bg-pink-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-pink-700 focus:ring-4 focus:ring-pink-300 focus:outline-none disabled:opacity-50"
 			disabled={!canSend}
 			on:click={upload}
 		>
@@ -147,6 +151,7 @@
 		</button>
 	</div>
 </div>
+<Footer {Actors} />
 
 <style>
 	.stacked img {
