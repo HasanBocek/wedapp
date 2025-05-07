@@ -1,3 +1,17 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+@import url('https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-sage: #D1D9CE;
+  --color-lavender: #CCCBE0;
+  --color-navy: #2C3E50;
+  --color-gold: #D4AF37;
+  --color-cream: #F8F4E3;
+  --color-emerald: #2D6E5D;
+  --color-dusty-blue: #8BACC1;
+  --color-mauve: #B98EA7;
+  --font-serif: 'Cardo', serif;
+  --font-sans: 'Montserrat', sans-serif;
+}

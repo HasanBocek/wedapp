@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import FileUploader from './components/FileUploader.svelte';
 	import FormInputs from './components/FormInputs.svelte';
 	import Title from './components/Title.svelte';
@@ -12,13 +13,15 @@
 	let text = 'Çektiğiniz Kareleri Bizimle Paylaşın';
 	let authorName = '';
 	let messageText = '';
-	let Actors = 'John Doe & Maria';
+	export let Actors = 'John Doe & Maria';
 
 	let containerRef;
 	let collapsedCount = 1;
 
 	const MAX_ITEMS = 50;
 	const ITEM_WIDTH = 144; // px, matches h-36 w-36
+
+	$: slug = $page.params.org_id;
 
 	// Handle new file selection without duplicates
 	function handleFilesChange(newFiles) {
@@ -111,43 +114,63 @@
 	// }
 </script>
 
-<Header {Actors} />
-<div
-	class="relative flex min-h-screen items-center justify-center bg-white bg-[radial-gradient(70%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)] p-4"
->
-	<div class="mb-8 w-full max-w-4xl space-y-6">
-		<Title {text} />
+<div class="relative min-h-screen" style="background: linear-gradient(135deg, var(--color-cream) 0%, white 100%);">
+	<div class="container mx-auto max-w-4xl px-2 py-4 sm:px-4 sm:py-8">
+		<Header {Actors} />
+		
+		<div class="my-6 sm:my-12 rounded-lg bg-white p-4 sm:p-8 shadow-md" style="border: 1px solid var(--color-sage);">
+			<Title {text} />
 
-		<FormInputs
-			bind:authorName
-			bind:messageText
-			onAuthorNameChange={() => {}}
-			onMessageTextChange={() => {}}
-		/>
+			<FormInputs
+				bind:authorName
+				bind:messageText
+				onAuthorNameChange={() => {}}
+				onMessageTextChange={() => {}}
+			/>
 
-		<FileUploader
-			bind:files
-			bind:previews
-			bind:expanded
-			bind:containerRef
-			bind:collapsedCount
-			bind:collapsedPositions
-			bind:collapsedRotations
-			{MAX_ITEMS}
-			{ITEM_WIDTH}
-			onFilesChange={handleFilesChange}
-			onDrop={handleDrop}
-			onDragOver={handleDragOver}
-			onToggleExpanded={toggleExpanded}
-			onRemovePreview={removePreview}
-		/>
+			<div class="my-6 sm:my-8">
+				<FileUploader
+					bind:files
+					bind:previews
+					bind:expanded
+					bind:containerRef
+					bind:collapsedCount
+					bind:collapsedPositions
+					bind:collapsedRotations
+					{MAX_ITEMS}
+					{ITEM_WIDTH}
+					onFilesChange={handleFilesChange}
+					onDrop={handleDrop}
+					onDragOver={handleDragOver}
+					onToggleExpanded={toggleExpanded}
+					onRemovePreview={removePreview}
+				/>
+			</div>
 
-		<button
-			class="mt-8 w-full cursor-pointer rounded-lg bg-pink-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-pink-700 focus:ring-4 focus:ring-pink-300 focus:outline-none disabled:opacity-50"
-			disabled={!canSend}
-		>
-			Gönder
-		</button>
+			<button
+				class="mt-6 sm:mt-8 w-full cursor-pointer rounded-lg px-5 py-3 text-center text-lg font-medium text-white shadow-md transition-all hover:shadow-lg focus:outline-none disabled:opacity-50"
+				style="background-color: var(--color-emerald); font-family: var(--font-sans);"
+				disabled={!canSend}
+			>
+				Gönder
+			</button>
+		</div>
 	</div>
+	<Footer {Actors} />
+
+	<!-- Floating button to open gallery -->
+	<a
+		href={`/${slug}/gallery`}
+		class="fixed bottom-4 right-4 z-50 flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white rounded-full p-4 shadow-lg transition"
+		aria-label="Galeriyi Aç"
+	>
+		Galeri
+	</a>
 </div>
-<Footer {Actors} />
+
+<style>
+	:global(body) {
+		color: var(--color-navy);
+		font-family: var(--font-sans);
+	}
+</style>

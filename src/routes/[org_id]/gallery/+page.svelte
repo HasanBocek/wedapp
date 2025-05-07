@@ -1,6 +1,9 @@
 <script>
 	import Header from '../components/Header.svelte';
 	import Footer from '../components/Footer.svelte';
+	import GalleryCard from './components/GalleryCard.svelte';
+	import GalleryModal from './components/GalleryModal.svelte';
+	import { page } from '$app/stores';
 
 	// Güncel ve çalışan mock veriler
 	export let posts = [
@@ -109,92 +112,43 @@
 		// Click propagation modal kapatmasın
 		event.stopPropagation();
 	}
+
+	$: slug = $page.params.org_id;
 </script>
 
-<Header {Actors} />
 
-<!-- Genel arka plan pembe ve serif font -->
-<div class="min-h-screen bg-pink-50 p-4">
-	<p class="pt-7 pb-10 text-lg lg:mr-60 lg:ml-60">{description}</p>
 
-	<div
-		class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:mr-60 lg:ml-60 lg:grid-cols-4"
-	>
-		{#each posts as post}
-			<div
-				class="bg-opacity-80 transform cursor-pointer overflow-hidden bg-white shadow-lg"
-				on:click={() => openModal(post)}
-			>
-				{#if post.photos && post.photos.length > 0}
-					<div class="relative">
-						<img src={post.photos[0]} alt="Gallery Preview" class="object-cover" />
-						{#if post.photos.length > 1}
-							<div
-								class="bg-opacity-60 absolute inset-0 flex items-center justify-center bg-black/50"
-							>
-								<span class="text-2xl font-semibold text-white">+{post.photos.length - 1}</span>
-							</div>
-						{/if}
-					</div>
-				{/if}
+<!-- Elegant background with custom fonts -->
+<div class="min-h-screen" style="background: linear-gradient(to bottom, var(--color-cream), white);">
+	<div class="container mx-auto px-2 py-4">
+		<Header {Actors} />
+		<h2 class="mb-8 mt-8 text-center font-serif text-3xl text-navy" style="font-family: var(--font-serif); color: var(--color-navy);">
+			{description}
+		</h2>
 
-				<!-- Gönderen, tarih ve mesaj -->
-				<div class="p-4">
-					{#if post.message}
-						<div class="mb-2 text-pink-800 italic">
-							“{post.message}”
-						</div>
-					{/if}
-					<div class="mt-2 text-sm text-pink-700">
-						{post.sender} • {post.date}
-					</div>
-				</div>
-			</div>
-		{/each}
+		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+			{#each posts as post}
+				<GalleryCard {post} {openModal} />
+			{/each}
+		</div>
 	</div>
 </div>
 
-{#if showModal}
-	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-		on:click={closeModal}
-	>
-		<div
-			class="relative mr-2 ml-2 max-h-[90vh] w-full max-w-3xl overflow-auto bg-white shadow-xl"
-			on:click|stopPropagation
-		>
-			<div class="sticky top-0 z-10 flex justify-end border-b bg-white p-4">
-				<button class="text-2xl text-pink-500 hover:text-pink-700" on:click={closeModal}>
-					✕
-				</button>
-			</div>
-
-			<!-- Kaydırılabilir fotoğraf alanı -->
-			{#if selectedPost.photos && selectedPost.photos.length > 0}
-				<div class="flex-grow overflow-auto p-4">
-					<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-						{#each selectedPost.photos as photo}
-							<img
-								src={photo}
-								alt="Photo"
-								class="h-64 w-full cursor-pointer object-cover"
-								on:click={toggleFullscreen}
-							/>
-						{/each}
-					</div>
-				</div>
-			{/if}
-
-			<div class="sticky bottom-0 border-t bg-white p-4">
-				{#if selectedPost.message}
-					<div class="mb-2 text-pink-800 italic">“{selectedPost.message}”</div>
-				{/if}
-				<div class="text-m text-pink-700">
-					{selectedPost.sender} • {selectedPost.date}
-				</div>
-			</div>
-		</div>
-	</div>
-{/if}
+<GalleryModal {selectedPost} {showModal} closeModal={closeModal} toggleFullscreen={toggleFullscreen} />
 
 <Footer {Actors} />
+
+<!-- Floating button to open share-yours form -->
+<a
+  href={`/${slug}/share-yours`}
+  class="fixed bottom-4 right-4 z-50 flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white rounded-full p-4 shadow-lg transition"
+  aria-label="Paylaşımı Aç"
+>
+  Paylaş
+</a>
+
+<style>
+	.scale-102 {
+		transform: scale(1.02);
+	}
+</style>

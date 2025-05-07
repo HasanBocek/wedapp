@@ -7,10 +7,13 @@
 	}
 </script>
 
-<header class="bg-gradient-to-r from-teal-400 to-emerald-500 p-15 text-white shadow-lg">
-	<div class="container mx-auto px-4 py-4">
+<header
+	class="mt-3 rounded-xl bg-cover bg-center text-white shadow-lg py-16"
+	style="background-image: url('https://www.brides.com/thmb/bERlutAxPimQWsKsDaCf6Khfd2s=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/katrina-and-samson-wedding-25-61a50cfe2e4844a68253b5a6303cac91.jpg');"
+>
+	<div class="container mx-auto max-h-7">
 		<div class="text-xl font-bold">
-			<a class="text-center text-5xl">{Actors}</a>
+			<p class="text-center text-3xl text-shadow-lg">{Actors}</p>
 		</div>
 	</div>
 </header>

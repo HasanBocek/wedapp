@@ -34,12 +34,35 @@
 		event.preventDefault();
 		onDragOver();
 	}
+
+	$: if (containerRef) {
+		const width = containerRef.clientWidth;
+		const fit = Math.floor(width / ITEM_WIDTH);
+		collapsedCount = Math.max(1, Math.min(previews.length, fit));
+	}
+
+	function getPositions(count) {
+		if (count === 1) return ['50%'];
+		const step = 100 / (count + 1);
+		return Array.from({ length: count }, (_, i) => `${(i + 1) * step}%`);
+	}
+
+	function getRotations(count) {
+		if (count === 1) return [0];
+		const maxAngle = 15;
+		const step = count > 1 ? (2 * maxAngle) / (count - 1) : 0;
+		return Array.from({ length: count }, (_, i) => (i - (count - 1) / 2) * step);
+	}
+
+	$: collapsedPositions = getPositions(collapsedCount);
+	$: collapsedRotations = getRotations(collapsedCount);
 </script>
 
 <div class="flex w-full items-center justify-center">
 	<label
 		for="dropzone-file"
-		class="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-pink-300 bg-pink-50 transition hover:bg-pink-100 sm:h-80 md:h-96"
+		class="flex h-48 sm:h-64 md:h-80 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition hover:bg-opacity-70"
+		style="border-color: var(--color-sage); background-color: var(--color-cream); background-image: url('data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D1D9CE' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E');"
 		on:drop={handleDrop}
 		on:dragover={handleDragOver}
 	>
@@ -51,35 +74,37 @@
 			class="hidden"
 			on:change={handleFiles}
 		/>
-		<div class="flex flex-col items-center justify-center pt-5 pb-6">
-			<svg
-				class="mb-4 h-12 w-12 text-pink-400"
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 20 16"
+		<div class="flex flex-col items-center justify-center px-3 py-4">
+			<svg 
+				class="mb-3 sm:mb-4 h-12 w-12 sm:h-14 sm:w-14" 
+				style="color: var(--color-navy);"
+				xmlns="http://www.w3.org/2000/svg" 
+				fill="none" 
+				viewBox="0 0 24 24" 
+				stroke="currentColor"
 			>
-				<path
-					stroke="currentColor"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2"
+				<path 
+					stroke-linecap="round" 
+					stroke-linejoin="round" 
+					stroke-width="1.5" 
+					d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" 
 				/>
 			</svg>
-			<p class="m-3 mb-2 text-center text-lg font-semibold text-pink-500">
+			<p class="mb-2 text-center text-base sm:text-lg font-serif" style="color: var(--color-navy); font-family: var(--font-serif);">
 				Resim veya Video Yüklemek için Tıkla
 			</p>
-			<p class="text-sm text-gray-500">Tek seferde en fazla {MAX_ITEMS} adet</p>
+			<p class="text-xs sm:text-sm" style="color: var(--color-navy); opacity: 0.75; font-family: var(--font-sans);">
+				Tek seferde en fazla {MAX_ITEMS} adet
+			</p>
 		</div>
 	</label>
 </div>
 
 {#if previews.length}
 	{#if !expanded}
-		<!-- Collapsed dynamic view -->
 		<div
 			bind:this={containerRef}
-			class="stacked relative mt-8 h-32 cursor-pointer"
+			class="stacked relative mt-6 sm:mt-8 h-32 cursor-pointer"
 			on:click={onToggleExpanded}
 		>
 			{#each previews.slice(0, collapsedCount) as p, i (p.src)}
@@ -88,35 +113,37 @@
 					src={p.src}
 					alt={p.name}
 					class="absolute h-36 w-36 rounded-lg object-cover shadow-lg"
-					style="left: {collapsedPositions[
-						i
-					]}; transform: translateX(-50%) rotate({collapsedRotations[i]}deg); z-index: {100 - i};"
+					style="left: {collapsedPositions[i]}; transform: translateX(-50%) rotate({collapsedRotations[i]}deg); z-index: {100 - i}; border: 2px solid white;"
 				/>
 			{/each}
 			<div
-				class="absolute top-2 right-2 z-100 flex h-8 w-8 items-center justify-center rounded-full bg-pink-600 font-semibold text-white shadow-lg"
+				class="absolute top-2 right-2 z-100 flex h-8 w-8 items-center justify-center rounded-full font-semibold text-white shadow-lg"
+				style="background-color: var(--color-mauve);"
 			>
 				{previews.length}
 			</div>
 		</div>
 	{:else}
 		<!-- Expanded view with remove controls -->
-		<div class="relative">
+		<div class="relative mt-4">
 			<button
 				on:click={onToggleExpanded}
-				class="top-2 right-2 rounded-full bg-pink-500 px-3 py-1 text-xs text-white shadow transition hover:bg-pink-600"
-				>Listeyi Küçült</button
+				class="rounded-md px-3 py-2 sm:px-4 sm:py-2 text-sm font-medium text-white shadow transition hover:shadow-lg"
+				style="background-color: var(--color-navy);"
 			>
-			<div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+				Listeyi Küçült
+			</button>
+			<div class="mt-4 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
 				{#each previews as p, i (p.src)}
 					<div animate:flip={{ duration: 100 }} class="relative">
 						<button
 							on:click={() => onRemovePreview(i)}
-							class="bg-opacity-80 hover:bg-opacity-100 absolute top-1 right-1 rounded-full bg-white p-1 shadow transition"
+							class="absolute top-2 right-2 rounded-full bg-white p-1.5 shadow transition hover:bg-gray-100"
+							style="color: var(--color-emerald);"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								class="h-4 w-4 text-pink-600"
+								class="h-4 w-4"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
@@ -136,14 +163,15 @@
 		</div>
 	{/if}
 {:else}
-	<p class="text-center text-gray-600">Henüz medya seçilmedi.</p>
+	<p class="my-3 sm:my-4 text-center" style="color: var(--color-navy); opacity: 0.6;">Henüz medya seçilmedi.</p>
 {/if}
 
 <style>
 	.stacked img {
-		transition: transform 0.2s ease;
+		transition: all 0.3s ease;
 	}
 	.stacked:hover img {
-		transform: translateY(-5px);
+		transform: translateY(-8px) translateX(-50%);
+		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 	}
 </style>
